@@ -30,11 +30,13 @@
 
     <script type="text/javascript">
         var apifs ;
+        var apidb;
         var debug_mode = false;
+
 apiready = function () {
 
     apifs = api.require('fs');
-
+    apidb = api.require('db');  
     var myconfig = 'fs://myconfig.js';
     printout('reading from: ' + myconfig);
     api.readFile({
