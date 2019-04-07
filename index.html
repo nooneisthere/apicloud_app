@@ -21,8 +21,12 @@
     </head>
 
     <body class="wrap">
-        <label>JS platform</label>
-        <input type="button" value="write whereisit" onclick="write_whereisit();">
+        <H2>JS platform</H2>
+        <input type="button" value="write whereisit" onclick="whereisit();">
+        <input type="button" value="call_fun1" onclick="call_fun1();">
+        <input type="button" value="call_fun2" onclick="call_fun2();">
+        <input type="button" value="call_fun3" onclick="call_fun3();">
+
         <div id="show_msg">
         </div>
 
@@ -32,11 +36,10 @@
         var apifs ;
         var apidb;
         var debug_mode = false;
-
 apiready = function () {
 
     apifs = api.require('fs');
-    apidb = api.require('db');  
+    apidb = api.require('db');
     var myconfig = 'fs://myconfig.js';
     printout('reading from: ' + myconfig);
     api.readFile({
