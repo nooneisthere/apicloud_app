@@ -1,4 +1,7 @@
-printout('get extra js');
+function printobj(obj){
+    printout(JSON.stringify(obj));
+}
+
 //api.toLauncher();
 //setInterval(myalarm,3000);
 
@@ -27,7 +30,7 @@ function get_stock(theID){
         console.log(data);
         var sinfo = data.split(/,|=/g);
         sinfo[5] = sinfo[31];
-        process_data(sinfo.slice(0,5),1,5);
+        process_data(sinfo.slice(0,6),1,5);
     },
     'text'
     );
@@ -37,13 +40,13 @@ function get_stock(theID){
 function get_aux(theID){
     $api.get('http://hq.sinajs.cn/format=text&list=' + theID,
     function(data){
-        console.log(data);
+        printobj(data);
         var sinfo = data.split(/,|=/g);
         sinfo[1] = sinfo[10];
         sinfo[2] = sinfo[4];
         sinfo[4] = sinfo[9];
         sinfo[5] = sinfo[11];
-        process_data(sinfo.slice(0,5),1,10);
+        process_data(sinfo.slice(0,6),1,10);
     },
     'text'
     );
@@ -68,9 +71,11 @@ function process_data(new_data,score,days){
         }
     }
 
-    if (alert_condition(saved_data,score)){
-        var title = new_data[1] + ' - ' + new_data[4];
-        var details =  title + ' - ' + new_data[5];
+    var result = alert_condition(saved_data,score);
+    if (result && checktime()){
+        var title = new_data[1];
+        title += result > 0 ? ' UP' : ' Down';
+        var details =  [result, new_data[4], new_data[5]].join(' - ');
         myalarm(title, details);
     }
     mysetStorage(new_data[0], saved_data);
@@ -78,12 +83,12 @@ function process_data(new_data,score,days){
 }
 
 function get_status(new_data,last_day){
-        var status = 0;
-        status += new_data[4] <  new_data[2] ?  -1 : 1;
-        if (last_day){
-            status += new_data[4] <  last_day[4] ?  -1 : 1;
-        }
-        return status;
+    var status = 0;
+    status += new_data[4] <  new_data[2] ?  -1 : 1;
+    if (last_day){
+        status += new_data[4] <  last_day[4] ?  -1 : 1;
+    }
+    return status;
 }
 
 function alert_condition (saved_data,score){
@@ -96,7 +101,7 @@ function alert_condition (saved_data,score){
         saved_data[i]['status'] = status;
         result += status;
         if (Math.abs(result) >= score){
-            return true;
+            return result;
         }
     }
     return false;
@@ -126,16 +131,11 @@ if (typeof(apifs) != 'undefined'){
     })
 }
 
-
-//统计-app恢复
 function onResume(){
-    //jpush.onResume();
-    console.log('JPush onResume');
+    console.log('jpush.onResume()');
 }
-//统计-app暂停
 function onPause(){
-    //jpush.onPause();
-    console.log('JPush onPause');
+    console.log('jpush.onPause()');
 }
 
 function test2(){
@@ -144,33 +144,37 @@ function test2(){
     console.log(JSON.stringify(mygetStorage(123)));
 }
 
-function thejob (){
-    if (checktime()){
-        get_stock('sz399001');
-        get_stock('sz399006');
-        get_aux('XAUUSD');
-        get_aux('USDCNY');
-    }
-}
-
-thejob();
-setInterval(thejob,3500 * 1000);
-
-
-
-function write_whereisit(){
-    var saved_data = mygetStorage('XAUUSD');
-    printout(saved_data);
-}
 
 function call_fun1(){
-    var saved_data = mygetStorage('USDCNY');
-    printout(saved_data);
+
+    var data = [
+    mygetStorage('USDCNY'),
+    mygetStorage('XAUUSD'),
+    mygetStorage('sz399001'),
+    mygetStorage('sz399006'),
+    ];
+    printobj(data);
 }
 
 function call_fun2(){
-    $api.rmStorage('USDCNY');
+    document.getElementById('show_msg').innerHTML='';
+
 }
+
 function call_fun3(){
-    $api.rmStorage('USDCNY');
+    $api.clearStorage ();
+    //$api.rmStorage('USDCNY');
 }
+
+
+function thejob (){
+    get_stock('sz399001');
+    get_stock('sz399006');
+    get_aux('XAUUSD');
+    get_aux('USDCNY');
+
+}
+
+thejob();
+setInterval(thejob,2000 * 1000);
+
