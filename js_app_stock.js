@@ -54,7 +54,7 @@ function process_data(new_data,score,days){
     score = score || 3;
     days =  days || 5;
     var last_day ;
-    var saved_data = mygetStorage(new_data[0]);
+    var saved_data = mygetStorage(new_data[0]) || [];
     //alert(saved_data);
     var cur_date = {'date':new_data[5],'data':new_data};
 
@@ -80,7 +80,7 @@ function process_data(new_data,score,days){
 function get_status(new_data,last_day){
         var status = 0;
         status += new_data[4] <  new_data[2] ?  -1 : 1;
-        if (last_day['data']){
+        if (last_day){
             status += new_data[4] <  last_day[4] ?  -1 : 1;
         }
         return status;
@@ -91,7 +91,8 @@ function alert_condition (saved_data,score){
     var status;
     console.log(saved_data);
     for (i = 0; i<saved_data.length;i++){
-        status = get_status(saved_data[i]['data'],saved_data[i+1]['data']) ;
+        var lastday = (i+1 < saved_data.length) ? saved_data[i+1]['data'] : undefined;
+        status = get_status(saved_data[i]['data'],lastday) ;
         saved_data[i]['status'] = status;
         result += status;
         if (Math.abs(result) >= score){

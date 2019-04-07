@@ -21,8 +21,8 @@
     </head>
 
     <body class="wrap">
-        <H2>JS platform</H2>
-        <input type="button" value="write whereisit" onclick="whereisit();">
+        <H3>JS platform</H3>
+        <input type="button" value="whereisit" onclick="write_whereisit();">
         <input type="button" value="call_fun1" onclick="call_fun1();">
         <input type="button" value="call_fun2" onclick="call_fun2();">
         <input type="button" value="call_fun3" onclick="call_fun3();">
@@ -36,7 +36,8 @@
         var apifs ;
         var apidb;
         var debug_mode = false;
-apiready = function () {
+
+        apiready = function () {
 
     apifs = api.require('fs');
     apidb = api.require('db');
